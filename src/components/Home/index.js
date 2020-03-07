@@ -2,8 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import Banner from "./Banner";
 import MainView from "./MainView";
+import { doFetchArticlesAll } from "../../actions/articles";
 
 export class Home extends React.Component {
+  componentDidMount() {
+    this.props.onFetchArticlesAll();
+  }
+
   render() {
     return (
       <div className="home-page">
@@ -23,8 +28,12 @@ export class Home extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  appName: state.appName
+const mapStateToProps = ({ articlesState }) => ({
+  appName: articlesState.appName
 });
 
-export default connect(mapStateToProps)(Home);
+const mapDispatchToProps = dispatch => ({
+  onFetchArticlesAll: () => dispatch(doFetchArticlesAll())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

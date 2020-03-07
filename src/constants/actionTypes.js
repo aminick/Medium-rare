@@ -1,0 +1,6 @@
+export const HOME_PAGE_LOADED = "HOME_PAGE_LOADED";
+export const FETCH_ARTICLES_ALL = "FETCH_ARTICLES_ALL";
+export const FETCH_SUCCESS = "FETCH_SUCCESS";
+export const FETCH_ERROR = "FETCH_ERROR";
+export const FETCH_START = "FETCH_START";
+export const ADD_ARTICLES = "ADD_ARTICLES";

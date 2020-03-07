@@ -1,7 +1,7 @@
 import React from "react";
+import ArticlePreview from "./ArticlePreview";
 
 export const ArticleList = ({ articles }) => {
-  if (!articles) return <div className="article-preview">Loading...</div>;
   if (articles.length === 0) {
     return (
       <div className="article-preview">No articles are here ... yet :(</div>
@@ -10,7 +10,7 @@ export const ArticleList = ({ articles }) => {
   return (
     <div>
       {articles.map(article => (
-        <h2>{article.title}</h2>
+        <ArticlePreview key={article.slug} article={article} />
       ))}
     </div>
   );

@@ -1,25 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore } from "redux";
 import { Provider } from "react-redux";
 import App from "./App";
-import "./index.css";
+
 import * as serviceWorker from "./serviceWorker";
-
-const defaultState = {
-  appName: "Medium-rare",
-  articles: [{ title: "A new article" }]
-};
-
-const reducer = (state = defaultState, action) => {
-  return state;
-};
-
-const store = createStore(reducer);
+import store from "./stores";
+import { HashRouter as Router } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css";
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </Provider>,
   document.getElementById("root")
 );
