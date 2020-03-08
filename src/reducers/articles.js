@@ -1,3 +1,4 @@
+// deprecated
 import {
   ADD_ARTICLES,
   FETCH_START,

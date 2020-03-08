@@ -1,38 +1,21 @@
 import {
-  FETCH_START,
-  FETCH_SUCCESS,
-  FETCH_ERROR,
-  ADD_ARTICLES
+  ARTICLES_REQUEST,
+  ARTICLES_SUCESS,
+  ARTICLES_FAILURE
 } from "../constants/actionTypes";
+import { CALL_API } from "../middleware/api";
+import Schemas from "../schemas";
 
-import Articles from "../api/articles";
-import { getArticlesFromRes } from "../selectors";
+export const fetchArticlesAll = () => ({
+  [CALL_API]: {
+    types: [ARTICLES_REQUEST, ARTICLES_SUCESS, ARTICLES_FAILURE],
+    endpoint: "/articles?limie=10",
+    schema: Schemas.ARTICLES_ARRAY
+  }
+});
 
-export const doFetchArticlesAll = () => dispatch => {
-  dispatch(doFetchStart());
-  Articles.fetchAll().then(
-    res => {
-      dispatch(doAddArticles(getArticlesFromRes(res)));
-      dispatch(doFetchSuccess());
-    },
-    error => dispatch(doFetchError(error))
-  );
+// fetch or load from cache
+// this is a thunk in order to dispath and getState
+export const loadArticlesAll = () => (dispatch, getState) => {
+  dispatch(fetchArticlesAll());
 };
-
-export const doFetchStart = () => ({
-  type: FETCH_START
-});
-
-export const doFetchSuccess = () => ({
-  type: FETCH_SUCCESS
-});
-
-export const doFetchError = error => ({
-  type: FETCH_ERROR,
-  error
-});
-
-export const doAddArticles = articles => ({
-  type: ADD_ARTICLES,
-  articles
-});

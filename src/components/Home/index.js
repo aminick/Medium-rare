@@ -2,11 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 import Banner from "./Banner";
 import MainView from "./MainView";
-import { doFetchArticlesAll } from "../../actions/articles";
+import { loadArticlesAll } from "../../actions/articles";
+import commonReducer from "../../reducers/common";
 
 export class Home extends React.Component {
   componentDidMount() {
-    this.props.onFetchArticlesAll();
+    this.props.loadArticlesAll();
   }
 
   render() {
@@ -28,12 +29,12 @@ export class Home extends React.Component {
   }
 }
 
-const mapStateToProps = ({ articlesState }) => ({
-  appName: articlesState.appName
+const mapStateToProps = ({ common }) => ({
+  appName: common.appName
 });
 
 const mapDispatchToProps = dispatch => ({
-  onFetchArticlesAll: () => dispatch(doFetchArticlesAll())
+  loadArticlesAll: () => dispatch(loadArticlesAll())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

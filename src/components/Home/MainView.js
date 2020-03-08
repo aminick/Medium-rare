@@ -30,10 +30,24 @@ export const MainView = ({ articles, isFetching, error }) => {
   );
 };
 
-const mapStateToProps = ({ articlesState }) => ({
-  articles: articlesState.articles,
-  isFetching: articlesState.isFetching,
-  error: articlesState.error
-});
+const mapStateToProps = ({ feeds, entities }) => {
+  const {
+    personalFeed: { isFetching, articles, error }
+  } = feeds;
+
+  // TO-DO
+  // Decouple Author & Articles data
+  const getArticles = articles.map(slug => {
+    const article = entities.articles[slug];
+    const author = entities.users[article.author];
+    return Object.assign({}, article, { author: author });
+  });
+
+  return {
+    articles: getArticles,
+    isFetching: isFetching,
+    error: error
+  };
+};
 
 export default connect(mapStateToProps)(MainView);
