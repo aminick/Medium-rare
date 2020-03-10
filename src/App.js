@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Route, Switch } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Login from "./components/Login";
-import { Route, Switch } from "react-router-dom";
+import Error from "./components/Error";
 export class App extends React.Component {
   render() {
     return (
@@ -17,6 +18,7 @@ export class App extends React.Component {
             <Login />
           </Route>
         </Switch>
+        <Error />
       </div>
     );
   }

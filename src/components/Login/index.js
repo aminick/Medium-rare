@@ -1,7 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
+import { loginUser } from "../../actions/auth";
+import { useHistory, useLocation } from "react-router-dom";
 
-export const Login = () => {
+export const Login = props => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  let history = useHistory();
+  let location = useLocation();
+
+  const handleChangeEmail = event => {
+    setEmail(event.target.value);
+  };
+
+  const handleChangePassword = event => {
+    setPassword(event.target.value);
+  };
+
+  const hanldeSubmit = (email, password) => {
+    const creds = {
+      user: {
+        email: email,
+        password: password
+      }
+    };
+
+    props.loginUser(creds).then(() => {
+      let { from } = location.state || { from: { pathname: "/" } };
+      history.replace(from);
+    });
+  };
+
   return (
     <div className="auth-page">
       <div className="container page">
@@ -12,13 +41,20 @@ export const Login = () => {
               <a>Need an account?</a>
             </p>
 
-            <form>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                hanldeSubmit(email, password);
+              }}
+            >
               <fieldset>
                 <fieldset className="form-group">
                   <input
                     className="form-control form-control-lg"
                     type="email"
+                    value={email}
                     placeholder="Email"
+                    onChange={handleChangeEmail}
                   />
                 </fieldset>
 
@@ -26,7 +62,9 @@ export const Login = () => {
                   <input
                     className="form-control form-control-lg"
                     type="password"
+                    value={password}
                     placeholder="Password"
+                    onChange={handleChangePassword}
                   />
                 </fieldset>
 
@@ -45,4 +83,8 @@ export const Login = () => {
   );
 };
 
-export default connect(null, null)(Login);
+const mapDispatchToProps = dispatch => ({
+  loginUser: creds => dispatch(loginUser(creds))
+});
+
+export default connect(null, mapDispatchToProps)(Login);

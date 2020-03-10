@@ -12,7 +12,7 @@ const promiseMiddleware = store => next => action => {
       .then(action => store.dispatch(action));
     return;
   }
-  next(action);
+  return next(action);
 };
 
 const isPromise = v => v && typeof v.then === "function";

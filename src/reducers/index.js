@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
-import articlesReducer from "./articles";
 import commonReducer from "./common";
 import merge from "lodash/merge";
 import feed from "./feed";
+import auth from "./auth";
 import {
   ARTICLES_REQUEST,
-  ARTICLES_SUCESS,
+  ARTICLES_SUCCESS,
   ARTICLES_FAILURE
 } from "../constants/actionTypes";
 
@@ -22,17 +22,25 @@ const entitiesReducer = (state = defaultEntityState, action) => {
 };
 
 const personalFeed = feed({
-  types: [ARTICLES_REQUEST, ARTICLES_SUCESS, ARTICLES_FAILURE]
+  types: [ARTICLES_REQUEST, ARTICLES_SUCCESS, ARTICLES_FAILURE]
 });
 
 const feeds = combineReducers({
   personalFeed
 });
 
+const errorMessageReducer = (state = null, action) => {
+  const { type, error } = action;
+  if (error) return error;
+  return null;
+};
+
 const rootReducer = combineReducers({
   common: commonReducer,
   entities: entitiesReducer,
-  feeds: feeds
+  feeds: feeds,
+  auth: auth,
+  errorMessage: errorMessageReducer
 });
 
 export default rootReducer;

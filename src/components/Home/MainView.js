@@ -1,8 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import ArticleList from "../ArticleList";
+import List from "../List";
+import ArticlePreview from "../ArticlePreview";
 
-export const MainView = ({ articles, isFetching, error }) => {
+export const MainView = ({ articles, error, personalFeed }) => {
+  const renderAritlcePreview = article => (
+    <ArticlePreview article={article} key={article.slug} />
+  );
+
   return (
     <div className="col-md-9">
       <div className="feed-toggle">
@@ -15,28 +20,22 @@ export const MainView = ({ articles, isFetching, error }) => {
         </ul>
       </div>
 
-      {isFetching ? (
-        <div className="text-center">
-          <div className="spinner-border" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
-        </div>
-      ) : (
-        <ArticleList articles={articles} />
-      )}
-
-      {error && alert(error)}
+      <List
+        renderItem={renderAritlcePreview}
+        items={articles}
+        {...personalFeed}
+      />
     </div>
   );
 };
 
 const mapStateToProps = ({ feeds, entities }) => {
   const {
-    personalFeed: { isFetching, articles, error }
+    personalFeed: { articles, error }
   } = feeds;
 
-  // TO-DO
-  // Decouple Author & Articles data
+  // TO-DO - Medium
+  // Decouple Author & Articles data on the view level
   const getArticles = articles.map(slug => {
     const article = entities.articles[slug];
     const author = entities.users[article.author];
@@ -44,9 +43,8 @@ const mapStateToProps = ({ feeds, entities }) => {
   });
 
   return {
-    articles: getArticles,
-    isFetching: isFetching,
-    error: error
+    personalFeed: feeds.personalFeed,
+    articles: getArticles
   };
 };
 

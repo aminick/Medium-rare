@@ -7,6 +7,7 @@ const checkErrors = response => {
   return response;
 };
 
+// TODO: Rewrite checkErrors logic
 /**
  * Fetches API and normalize data
  * @param {string} endpoint

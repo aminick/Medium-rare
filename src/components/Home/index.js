@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import Banner from "./Banner";
 import MainView from "./MainView";
 import { loadArticlesAll } from "../../actions/articles";
-import commonReducer from "../../reducers/common";
 
 export class Home extends React.Component {
   componentDidMount() {
