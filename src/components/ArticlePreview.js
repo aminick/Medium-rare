@@ -12,39 +12,41 @@ const ArticlePreview = props => {
   } = props.article;
 
   return (
-    <div className="article-preview">
-      <div className="article-meta">
-        <a href="/">
-          <img src={author.image} alt={author.username} />
-        </a>
+    <div className="card">
+      <div className="card-content">
+        <h1 className="is-size-2 has-text-weight-bold">{title}</h1>
+        <p>{description}</p>
 
-        <div className="info">
-          <a href="/" className="author">
-            {author.username}
-          </a>
-          <span className="date">{new Date(createdAt).toDateString()}</span>
-        </div>
-
-        <div className="pull-xs-right">
-          <button className="btn btn-sm btn-outline-primary">
-            <i className="ion-heart"></i>
-            {" " + favoritesCount}
-          </button>
+        <div className="article-preview-meta">
+          <div className="author-meta">
+            <div className="author-info">
+              <figure className="image is-24x24 author-avatar">
+                <img
+                  className="is-rounded"
+                  src={author.image}
+                  alt={author.username}
+                />
+              </figure>
+              <a href="/" className="is-size-6 has-text-black">
+                {author.username}
+              </a>
+            </div>
+            <div className="date">
+              <span className="is-size-7">
+                {new Date(createdAt).toDateString()}
+              </span>
+            </div>
+          </div>
+          <span className="tag is-white tag-heart">❤️ {favoritesCount}</span>
+          <div className="tag-list">
+            {tagList.map(tag => (
+              <span className="tag is-light" key={tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
-
-      <a to={`article/${slug}`} className="preview-link">
-        <h1>{title}</h1>
-        <p>{description}</p>
-        <span>Read more...</span>
-        <ul className="tag-list">
-          {tagList.map(tag => (
-            <li className="tag-default tag-pill tag-outline" key={tag}>
-              {tag}
-            </li>
-          ))}
-        </ul>
-      </a>
     </div>
   );
 };

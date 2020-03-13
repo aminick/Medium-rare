@@ -1,7 +1,13 @@
 import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
-  LOGIN_FAILURE
+  LOGIN_FAILURE,
+  REGISTER_REQUEST,
+  REGISTER_SUCCESS,
+  REGISTER_FAILURE,
+  LOGOUT_REQUEST,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE
 } from "../constants/actionTypes";
 
 import Auth from "../api/auth";
@@ -30,10 +36,72 @@ export const loginUser = creds => dispatch => {
   return Auth.loginUser(creds).then(
     response => {
       localStorage.setItem("id_token", response.token);
+      return Promise.resolve(dispatch(doLoginSuccess(response)));
+    },
+    error => {
+      return Promise.reject(dispatch(doLoginFailure(error)));
+    }
+  );
+};
+
+export const getCurrentUser = token => dispatch => {
+  dispatch(doLoginRequest());
+  return Auth.getCurrentUser(token).then(
+    response => {
       dispatch(doLoginSuccess(response));
     },
     error => {
       return dispatch(doLoginFailure(error));
     }
   );
+};
+
+export const doRegisterRequest = () => ({
+  type: REGISTER_REQUEST
+});
+
+export const doRegisterSuccess = response => ({
+  type: REGISTER_SUCCESS,
+  response
+});
+
+export const doRegisterFailure = error => ({
+  type: REGISTER_FAILURE,
+  error: "Register failed"
+});
+
+export const registerUser = creds => dispatch => {
+  dispatch(doRegisterRequest());
+  return Auth.registerUser(creds).then(
+    response => {
+      localStorage.setItem("id_token", response.token);
+      return Promise.resolve(dispatch(doRegisterSuccess(response)));
+    },
+    error => {
+      return Promise.reject(dispatch(doRegisterFailure(error)));
+    }
+  );
+};
+
+export const doLogoutRequest = () => ({
+  type: LOGOUT_REQUEST
+});
+
+export const doLogoutSuccess = () => ({
+  type: LOGOUT_SUCCESS
+});
+
+export const doLogoutFailure = () => ({
+  type: LOGOUT_FAILURE,
+  error: "Something bad happened..."
+});
+
+export const doLogoutUser = () => dispatch => {
+  dispatch(doLogoutRequest());
+  try {
+    localStorage.removeItem("id_token");
+    dispatch(doLogoutSuccess());
+  } catch (e) {
+    dispatch(doLogoutFailure());
+  }
 };

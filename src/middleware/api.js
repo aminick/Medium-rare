@@ -19,6 +19,7 @@
  */
 
 import callApi from "../api";
+import { isEmpty } from "lodash";
 
 export const CALL_API = "Call_API";
 
@@ -29,23 +30,9 @@ const api = store => next => action => {
     return next(action);
   }
 
-  let { types, endpoint, schema } = callAPI;
+  apiFormatCheck(callAPI);
 
-  if (typeof endpoint != "string") {
-    throw new Error("Expect end point to be a string"); // Error will be caught by JavaScript
-  }
-
-  if (!schema) {
-    throw new Error("Expect a schema");
-  }
-
-  if (!Array.isArray(types) || types.length !== 3) {
-    throw new Error("Expect types to be an array of 3 action types");
-  }
-
-  if (!types.every(type => typeof type === "string")) {
-    throw new Error("Endpoind action types to be strings");
-  }
+  let { types, endpoint, schema, config = {} } = callAPI;
 
   // deconstruct api actions to regular actions
   // and add new data
@@ -58,7 +45,7 @@ const api = store => next => action => {
   const [requestType, successType, failureType] = types;
   next(actionWith({ type: requestType }));
 
-  return callApi(endpoint, schema).then(
+  return callApi(endpoint, schema, config).then(
     response =>
       next(
         actionWith({
@@ -74,6 +61,33 @@ const api = store => next => action => {
         })
       )
   );
+};
+
+const apiFormatCheck = ({ types, endpoint, schema, config }) => {
+  if (typeof endpoint != "string") {
+    throw new Error("Expect end point to be a string"); // Error will be caught by JavaScript
+  }
+
+  if (!schema) {
+    throw new Error("Expect a schema");
+  }
+
+  if (!Array.isArray(types) || types.length !== 3) {
+    throw new Error("Expect types to be an array of 3 action types");
+  }
+
+  if (!types.every(type => typeof type === "string")) {
+    throw new Error("Expect Endpoind action types to be strings");
+  }
+
+  if (!isEmpty(config)) {
+    if (!config.method || typeof config.method !== "string")
+      throw new Error("Expect config methods to be a string");
+    if (!config.headers || typeof config.headers !== "object")
+      throw new Error("Expect config headers to be an object");
+    if (!config.body || typeof config.body !== "string")
+      throw new Error("Expect config body to be an string");
+  }
 };
 
 export default api;

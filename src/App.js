@@ -1,31 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import Header from "./components/Header";
+import { Route, Switch, Redirect } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Error from "./components/Error";
-export class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <Header appName={this.props.appName}></Header>
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-        </Switch>
-        <Error />
-      </div>
-    );
-  }
-}
+import Register from "./components/Register";
+import Settings from "./components/Settings";
+import { getCurrentUser } from "./actions/auth";
 
-const mapStateToProps = ({ common }) => ({
-  appName: common.appName
+const PrivateRoute = ({ children, isAuthenticated, ...rest }) => {
+  return (
+    <Route {...rest}>
+      {true ? children : <Redirect to={{ pathname: "/login" }} />}
+    </Route>
+  );
+};
+
+export const App = props => {
+  useEffect(() => {
+    const token = window.localStorage.getItem("id_token");
+    if (token) props.getCurrentUser(token);
+  }, []);
+
+  return (
+    <div>
+      <Navbar appName={props.appName}></Navbar>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/register">
+          <Register />
+        </Route>
+        <PrivateRoute
+          path="/settings"
+          isAuthenticated={props.auth.isAuthenticated}
+        >
+          <Settings />
+        </PrivateRoute>
+      </Switch>
+      <Error />
+    </div>
+  );
+};
+
+const mapStateToProps = ({ common, auth }) => ({
+  appName: common.appName,
+  auth: auth
 });
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => ({
+  getCurrentUser: token => dispatch(getCurrentUser(token))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

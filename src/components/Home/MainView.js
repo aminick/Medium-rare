@@ -9,16 +9,17 @@ export const MainView = ({ articles, error, personalFeed }) => {
   );
 
   return (
-    <div className="col-md-9">
-      <div className="feed-toggle">
-        <ul className="nav nav-pills outline-active">
-          <li className="nav-item">
-            <a href="/" className="nav-link active">
-              Global Feed
-            </a>
-          </li>
-        </ul>
-      </div>
+    <div className="column is-three-quarters">
+      <nav className="level border-bottom">
+        <div className="level-left">
+          <p href="/" className="level-item">
+            <strong>Global Feed</strong>
+          </p>
+          <p className="level-item">
+            <a>Published</a>
+          </p>
+        </div>
+      </nav>
 
       <List
         renderItem={renderAritlcePreview}

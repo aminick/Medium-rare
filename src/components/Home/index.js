@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import Banner from "./Banner";
 import MainView from "./MainView";
-import { loadArticlesAll } from "../../actions/articles";
+import { loadArticlesAll } from "../../actions";
 
 export class Home extends React.Component {
   componentDidMount() {
@@ -11,18 +11,20 @@ export class Home extends React.Component {
 
   render() {
     return (
-      <div className="home-page">
+      <div>
         <Banner appName={this.props.appName}></Banner>
-        <div className="container page">
-          <div className="row">
-            <MainView />
-            <div className="col-md-3">
-              <div className="sidebar">
-                <p>Popular Tags</p>
+        <section className="section">
+          <div className="container">
+            <div className="columns">
+              <MainView />
+              <div className="column">
+                <div className="">
+                  <p>Popular Tags</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     );
   }

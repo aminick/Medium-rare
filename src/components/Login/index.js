@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { loginUser } from "../../actions/auth";
 import { useHistory, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const Login = props => {
   const [email, setEmail] = useState("");
@@ -24,59 +25,62 @@ export const Login = props => {
         password: password
       }
     };
-
-    props.loginUser(creds).then(() => {
-      let { from } = location.state || { from: { pathname: "/" } };
-      history.replace(from);
-    });
+    props.loginUser(creds).then(
+      () => {
+        let { from } = location.state || { from: { pathname: "/" } };
+        history.replace(from);
+      },
+      () => {}
+    );
   };
 
   return (
-    <div className="auth-page">
-      <div className="container page">
-        <div className="row">
-          <div className="col-md-6 offset-md-3 col-xs-12">
-            <h1 className="text-xs-center">Sign In</h1>
-            <p className="text-xs-center">
-              <a>Need an account?</a>
-            </p>
+    <div className="">
+      <div className="container">
+        <div className="">
+          <h1 className="is-size-1">Sign In</h1>
+          <p className="">
+            <Link to="/register">Need an account?</Link>
+          </p>
 
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                hanldeSubmit(email, password);
-              }}
-            >
-              <fieldset>
-                <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="email"
-                    value={email}
-                    placeholder="Email"
-                    onChange={handleChangeEmail}
-                  />
-                </fieldset>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              hanldeSubmit(email, password);
+            }}
+          >
+            <div className="field">
+              <label className="label">Email</label>
+              <div className="control">
+                <input
+                  className="input"
+                  type="email"
+                  value={email}
+                  placeholder="Email"
+                  onChange={handleChangeEmail}
+                />
+              </div>
+            </div>
 
-                <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="password"
-                    value={password}
-                    placeholder="Password"
-                    onChange={handleChangePassword}
-                  />
-                </fieldset>
+            <div className="field">
+              <label className="label">Password</label>
+              <div className="control">
+                <input
+                  className="input"
+                  type="password"
+                  value={password}
+                  placeholder="Password"
+                  onChange={handleChangePassword}
+                />
+              </div>
+            </div>
 
-                <button
-                  className="btn btn-lg btn-primary pull-xs-right"
-                  type="submit"
-                >
-                  Sign in
-                </button>
-              </fieldset>
-            </form>
-          </div>
+            <div className="control">
+              <button className="button is-primary" type="submit">
+                Sign in
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

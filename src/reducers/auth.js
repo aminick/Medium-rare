@@ -1,7 +1,13 @@
 import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
-  LOGIN_FAILURE
+  LOGIN_FAILURE,
+  REGISTER_REQUEST,
+  REGISTER_SUCCESS,
+  REGISTER_FAILURE,
+  LOGOUT_REQUEST,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE
 } from "../constants/actionTypes";
 
 const defaultAuthState = {
@@ -12,9 +18,12 @@ const defaultAuthState = {
 
 const auth = (state = defaultAuthState, action) => {
   switch (action.type) {
-    case LOGIN_REQUEST: {
+    case REGISTER_REQUEST:
+    case LOGIN_REQUEST:
+    case LOGOUT_REQUEST: {
       return { ...state, isFetching: true, isAuthenticated: false, user: null };
     }
+    case REGISTER_SUCCESS:
     case LOGIN_SUCCESS: {
       return {
         ...state,
@@ -23,13 +32,18 @@ const auth = (state = defaultAuthState, action) => {
         user: action.response.result
       };
     }
-    case LOGIN_FAILURE: {
+    case REGISTER_FAILURE:
+    case LOGIN_FAILURE:
+    case LOGOUT_FAILURE: {
       return {
         ...state,
         isFetching: false,
         isAuthenticated: false,
         error: action.error
       };
+    }
+    case LOGOUT_SUCCESS: {
+      return defaultAuthState;
     }
     default:
       return state;
