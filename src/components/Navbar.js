@@ -78,11 +78,9 @@ const Navbar = props => {
     >
       <div className="container">
         <div className="navbar-brand">
-          <a className="navbar-item">
-            <Link to="/" className="">
-              {props.appName.toLowerCase()}
-            </Link>
-          </a>
+          <Link to="/" className="navbar-item">
+            {props.appName.toLowerCase()}
+          </Link>
           <a
             role="button"
             className="navbar-burger"
