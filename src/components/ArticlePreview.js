@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ArticlePreview = props => {
   const {
@@ -14,7 +15,12 @@ const ArticlePreview = props => {
   return (
     <div className="card">
       <div className="card-content">
-        <h1 className="is-size-2 has-text-weight-bold">{title}</h1>
+        <Link
+          to={`/article/${slug}`}
+          className="is-size-2 has-text-black has-text-weight-bold"
+        >
+          {title}
+        </Link>
         <p>{description}</p>
 
         <div className="article-preview-meta">

@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import Error from "./components/Error";
 import Register from "./components/Register";
 import Settings from "./components/Settings";
+import Article from "./components/Article";
 import { getCurrentUser } from "./actions/auth";
 
 const PrivateRoute = ({ children, isAuthenticated, ...rest }) => {
@@ -36,6 +37,7 @@ export const App = props => {
         <Route path="/register">
           <Register />
         </Route>
+        <Route path="/article/:slug" component={Article} />
         <PrivateRoute
           path="/settings"
           isAuthenticated={props.auth.isAuthenticated}

@@ -21,13 +21,19 @@ const callApi = (endpoint, schema, config = {}) => {
     }
   };
   config = merge(config, tokenHeader);
-  return fetch(`${API_ROOT}${endpoint}`, config)
-    .then(response => checkErrors(response))
-    .then(response => response.json())
-    .then(json => {
+  return fetch(`${API_ROOT}${endpoint}`, config).then(response => {
+    return response.json().then(json => {
+      if (!response.ok) return Promise.reject(json);
       const key = Object.keys(json)[0];
       return normalize(json[key], schema);
-    }); // 🔥 maybe a selector for articles?
+    });
+  });
+  // .then(response => checkErrors(response))
+  // .then(response => response.json())
+  // .then(json => {
+  //   const key = Object.keys(json)[0];
+  //   return normalize(json[key], schema);
+  // }); // 🔥 maybe a selector for articles?
   /**
    * resolved json is a normalized object:
    * {

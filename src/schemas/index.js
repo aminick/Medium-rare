@@ -19,9 +19,18 @@ const article = new schema.Entity(
 
 const articles = [article];
 
+const comment = new schema.Entity("comments", {
+  author: user
+});
+
+const comments = [comment];
+
 const Schemas = {
   USER: user,
-  ARTICLES_ARRAY: articles
+  ARTICLES_ARRAY: articles,
+  ARTICLE: article,
+  COMMENT: comment,
+  COMMENTS_ARRAY: comments
 };
 
 export default Schemas;

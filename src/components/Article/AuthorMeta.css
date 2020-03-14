@@ -1,0 +1,10 @@
+.author-image-container {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}
+
+.author-meta-container {
+  display: inline-block;
+  vertical-align: middle;
+}

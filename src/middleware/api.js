@@ -34,8 +34,8 @@ const api = store => next => action => {
 
   let { types, endpoint, schema, config = {} } = callAPI;
 
-  // deconstruct api actions to regular actions
-  // and add new data
+  // deconstruct api actions to regular actions and add new data
+  // probably overkill
   const actionWith = data => {
     const finalAction = Object.assign({}, action, data);
     delete finalAction[CALL_API];
