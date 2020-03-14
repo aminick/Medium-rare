@@ -25,7 +25,6 @@ const loginUser = creds => {
         return Promise.reject(json);
       }
       const { token, ...rest } = json.user;
-      console.log(token, rest);
       const normalized = normalize(rest, Schemas.USER);
       return {
         ...normalized,
@@ -67,7 +66,7 @@ const registerUser = creds => {
       if (!response.ok) {
         return Promise.reject(json);
       }
-      const { token, ...rest } = json.user; // extract token from response
+      const { token, ...rest } = json.user;
       const normalized = normalize(rest, Schemas.USER);
       return {
         ...normalized,

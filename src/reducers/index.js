@@ -3,6 +3,7 @@ import commonReducer from "./common";
 import merge from "lodash/merge";
 import feed from "./feed";
 import auth from "./auth";
+import article from "./article";
 import {
   ARTICLES_REQUEST,
   ARTICLES_SUCCESS,
@@ -21,16 +22,16 @@ const entitiesReducer = (state = defaultEntityState, action) => {
   return state;
 };
 
-const personalFeed = feed({
+const globalFeed = feed({
   types: [ARTICLES_REQUEST, ARTICLES_SUCCESS, ARTICLES_FAILURE]
 });
 
 const feeds = combineReducers({
-  personalFeed
+  globalFeed
 });
 
 const errorMessageReducer = (state = null, action) => {
-  const { type, error } = action;
+  const { error } = action;
   if (error) return error;
   return null;
 };
@@ -40,7 +41,8 @@ const rootReducer = combineReducers({
   entities: entitiesReducer,
   feeds: feeds,
   auth: auth,
-  errorMessage: errorMessageReducer
+  errorMessage: errorMessageReducer,
+  article: article
 });
 
 export default rootReducer;

@@ -19,7 +19,6 @@
  */
 
 import callApi from "../api";
-import { isEmpty } from "lodash";
 
 export const CALL_API = "Call_API";
 
@@ -34,8 +33,6 @@ const api = store => next => action => {
 
   let { types, endpoint, schema, config = {} } = callAPI;
 
-  // deconstruct api actions to regular actions and add new data
-  // probably overkill
   const actionWith = data => {
     const finalAction = Object.assign({}, action, data);
     delete finalAction[CALL_API];
@@ -57,7 +54,7 @@ const api = store => next => action => {
       next(
         actionWith({
           type: failureType,
-          error: error.message || "Something went wrong...."
+          error: error.message || error.error || "Something went wrong...."
         })
       )
   );
@@ -78,15 +75,6 @@ const apiFormatCheck = ({ types, endpoint, schema, config }) => {
 
   if (!types.every(type => typeof type === "string")) {
     throw new Error("Expect Endpoind action types to be strings");
-  }
-
-  if (!isEmpty(config)) {
-    if (!config.method || typeof config.method !== "string")
-      throw new Error("Expect config methods to be a string");
-    if (!config.headers || typeof config.headers !== "object")
-      throw new Error("Expect config headers to be an object");
-    if (!config.body || typeof config.body !== "string")
-      throw new Error("Expect config body to be an string");
   }
 };
 

@@ -7,7 +7,8 @@ import {
   REGISTER_FAILURE,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  LOGOUT_FAILURE
+  LOGOUT_FAILURE,
+  SETTINGS_SUCCESS
 } from "../constants/actionTypes";
 
 const defaultAuthState = {
@@ -44,6 +45,9 @@ const auth = (state = defaultAuthState, action) => {
     }
     case LOGOUT_SUCCESS: {
       return defaultAuthState;
+    }
+    case SETTINGS_SUCCESS: {
+      return { ...state, user: action.response.result.user };
     }
     default:
       return state;

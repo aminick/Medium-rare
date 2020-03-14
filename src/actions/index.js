@@ -14,7 +14,7 @@ export const fetchArticlesAll = () => ({
       actionTypes.ARTICLES_FAILURE
     ],
     endpoint: "/articles?limie=10",
-    schema: Schemas.ARTICLES_ARRAY
+    schema: { articles: Schemas.ARTICLES_ARRAY }
   }
 });
 
@@ -34,14 +34,14 @@ const fetchUpdateSettings = settings => ({
       actionTypes.SETTINGS_FAILURE
     ],
     endpoint: "/user",
-    schema: Schemas.USER,
     config: {
       method: "PUT",
       headers: {
         "Content-Type": "application/json;charset=utf-8"
       },
       body: JSON.stringify(settings)
-    }
+    },
+    schema: { user: Schemas.USER }
   }
 });
 

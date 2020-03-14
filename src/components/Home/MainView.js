@@ -32,11 +32,9 @@ export const MainView = ({ articles, error, personalFeed }) => {
 
 const mapStateToProps = ({ feeds, entities }) => {
   const {
-    personalFeed: { articles, error }
+    globalFeed: { isFetching, articles, error }
   } = feeds;
 
-  // TO-DO - Medium
-  // Decouple Author & Articles data on the view level
   const getArticles = articles.map(slug => {
     const article = entities.articles[slug];
     const author = entities.users[article.author];
@@ -44,7 +42,7 @@ const mapStateToProps = ({ feeds, entities }) => {
   });
 
   return {
-    personalFeed: feeds.personalFeed,
+    globalFeed: feeds.personalFeed,
     articles: getArticles
   };
 };

@@ -29,7 +29,7 @@ const feed = ({ types }) => {
         return {
           ...state,
           isFetching: false,
-          articles: action.response.result
+          articles: action.response.result.articles
         };
       }
       case failureType: {

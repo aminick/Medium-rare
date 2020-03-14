@@ -1,8 +1,15 @@
 import React from "react";
+import { connect } from "react-redux";
+import { deleteComment } from "../../actions/api";
 
 const Comment = props => {
-  const { author, body } = props;
+  const { id, slug, author, body, currentUser } = props;
   const { username, image } = author;
+
+  const handleDeleteComment = () => {
+    props.deleteComment(slug, id);
+  };
+
   return (
     <>
       <article className="media">
@@ -21,9 +28,18 @@ const Comment = props => {
             </p>
           </div>
         </div>
+        {username === currentUser.username ? (
+          <div className="media-right">
+            <button className="delete" onClick={handleDeleteComment}></button>
+          </div>
+        ) : null}
       </article>
     </>
   );
 };
 
-export default Comment;
+const mapDispatchToProps = {
+  deleteComment
+};
+
+export default connect(null, mapDispatchToProps)(Comment);

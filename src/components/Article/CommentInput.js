@@ -1,13 +1,21 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { addComment } from "../../actions/api";
 
 const CommentInput = props => {
+  const { currentUser, slug } = props;
+  const { image } = currentUser;
   const [comment, setComment] = useState("");
   const handleCommentChange = event => {
     setComment(event.target.value);
   };
   const handleCommentSubmit = event => {
     event.preventDefault();
-    alert(comment, "submit!");
+    props.addComment(slug, {
+      comment: {
+        body: comment
+      }
+    });
     setComment("");
   };
   return (
@@ -15,7 +23,13 @@ const CommentInput = props => {
       <article className="media">
         <figure className="media-left">
           <p className="image is-64x64">
-            <img src="https://bulma.io/images/placeholders/128x128.png" />
+            <img
+              className="is-rounded"
+              src={
+                image ||
+                "https://static.productionready.io/images/smiley-cyrus.jpg"
+              }
+            />
           </p>
         </figure>
 
@@ -46,4 +60,8 @@ const CommentInput = props => {
   );
 };
 
-export default CommentInput;
+const mapDispatchToProps = {
+  addComment
+};
+
+export default connect(null, mapDispatchToProps)(CommentInput);

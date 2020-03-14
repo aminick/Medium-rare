@@ -2,12 +2,7 @@ import { normalize } from "normalizr";
 import { merge } from "lodash";
 const API_ROOT = "https://conduit.productionready.io/api";
 
-const checkErrors = response => {
-  if (!response.ok) return Promise.reject(response.json());
-  return response;
-};
-
-// TODO: Rewrite checkErrors logic <-- maybe this works as well
+// TODO: Change input config
 /**
  * Fetches API and normalize data
  * @param {string} endpoint
@@ -20,20 +15,13 @@ const callApi = (endpoint, schema, config = {}) => {
       authorization: `Token ${token}`
     }
   };
-  config = merge(config, tokenHeader);
+  config = (token && merge(config, tokenHeader)) || {};
   return fetch(`${API_ROOT}${endpoint}`, config).then(response => {
     return response.json().then(json => {
       if (!response.ok) return Promise.reject(json);
-      const key = Object.keys(json)[0];
-      return normalize(json[key], schema);
+      return normalize(json, schema);
     });
   });
-  // .then(response => checkErrors(response))
-  // .then(response => response.json())
-  // .then(json => {
-  //   const key = Object.keys(json)[0];
-  //   return normalize(json[key], schema);
-  // }); // 🔥 maybe a selector for articles?
   /**
    * resolved json is a normalized object:
    * {

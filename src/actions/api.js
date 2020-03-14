@@ -9,13 +9,11 @@ const fetchArticle = slug => ({
       actionTypes.ARTICLES_FAILURE
     ],
     endpoint: `/articles/${slug}`,
-    schema: Schemas.ARTICLE
+    schema: { article: Schemas.ARTICLE }
   }
 });
 
 export const loadArticle = slug => (dispatch, getState) => {
-  const article = getState().entities.articles[slug];
-  if (article) return null;
   return dispatch(fetchArticle(slug));
 };
 
@@ -27,10 +25,45 @@ export const fetchComments = slug => ({
       actionTypes.COMMENTS_FAILURE
     ],
     endpoint: `/articles/${slug}/comments`,
-    schema: Schemas.COMMENTS_ARRAY
+    schema: { comments: Schemas.COMMENTS_ARRAY }
   }
 });
 
 export const loadComments = slug => dispatch => {
   return dispatch(fetchComments(slug));
 };
+
+export const addComment = (slug, comment) => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.COMMENT_ADD_REQUEST,
+      actionTypes.COMMENT_ADD_SUCCESS,
+      actionTypes.COMMENT_ADD_FAILURE
+    ],
+    endpoint: `/articles/${slug}/comments`,
+    config: {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify(comment)
+    },
+    schema: { comment: Schemas.COMMENT }
+  }
+});
+
+export const deleteComment = (slug, id) => ({
+  id,
+  [CALL_API]: {
+    types: [
+      actionTypes.COMMENT_DELETE_REQUEST,
+      actionTypes.COMMENT_DELETE_SUCCESS,
+      actionTypes.COMMENT_DELETE_FAILURE
+    ],
+    endpoint: `/articles/${slug}/comments/${id}`,
+    config: {
+      method: "DELETE"
+    },
+    schema: {}
+  }
+});

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -19,10 +19,12 @@ const PrivateRoute = ({ children, isAuthenticated, ...rest }) => {
 };
 
 export const App = props => {
+  const { getCurrentUser } = props;
+
   useEffect(() => {
     const token = window.localStorage.getItem("id_token");
-    if (token) props.getCurrentUser(token);
-  }, []);
+    if (token) getCurrentUser(token);
+  }, [getCurrentUser]);
 
   return (
     <div>

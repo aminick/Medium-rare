@@ -11,12 +11,13 @@ export const Settings = props => {
     password: ""
   });
 
+  const { currentUser } = props;
+
   useEffect(() => {
-    let { currentUser } = props;
     setUser({
       ...currentUser
     });
-  }, [props.currentUser]);
+  }, [currentUser]);
 
   const handleChange = event => {
     setUser({

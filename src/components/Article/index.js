@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { isEmpty } from "lodash";
-
 import ArticleMeta from "./ArticleMeta";
 import CommentsContainer from "./CommentsContainer";
 import { loadArticle, loadComments } from "../../actions/api";
@@ -10,22 +9,19 @@ import { loadArticle, loadComments } from "../../actions/api";
 const Article = props => {
   const { slug } = useParams();
   const { article, author } = props;
-  const [commentsAsIds, setCommentsAsIds] = useState([]);
-  useEffect(() => {
-    props.loadArticle(slug);
-    props.loadComments(slug).then(response => {
-      if (response.response) {
-        setCommentsAsIds(response.response.result);
-      }
-    });
-  }, []);
+  const { loadArticle, loadComments } = props;
 
-  if (isEmpty(article)) return <div>Loading...</div>;
+  useEffect(() => {
+    loadArticle(slug);
+    loadComments(slug);
+  }, [loadArticle, loadComments, slug]);
+
+  if (isEmpty(article)) return <div></div>;
 
   return (
     <div>
       <ArticleMeta {...props.article} author={author} />
-      <CommentsContainer commentsAsIds={commentsAsIds} />
+      <CommentsContainer slug={slug} />
     </div>
   );
 };
