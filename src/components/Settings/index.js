@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { updateSettings } from "../../actions";
+import { updateSettings } from "../../actions/api";
 
 export const Settings = props => {
   const [user, setUser] = useState({

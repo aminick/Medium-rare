@@ -1,35 +1,38 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
-import { isEmpty } from "lodash";
 import ArticleMeta from "./ArticleMeta";
 import CommentsContainer from "./CommentsContainer";
+import Error from "../Error";
 import { loadArticle, loadComments } from "../../actions/api";
+import { unloadArticle } from "../../actions";
 
 const Article = props => {
   const { slug } = useParams();
   const { article, author } = props;
-  const { loadArticle, loadComments } = props;
+  const { loadArticle, loadComments, onUnload } = props;
 
   useEffect(() => {
     loadArticle(slug);
     loadComments(slug);
-  }, [loadArticle, loadComments, slug]);
-
-  if (isEmpty(article)) return <div></div>;
+    return () => {
+      onUnload();
+    };
+  }, [loadArticle, loadComments, onUnload, slug]);
 
   return (
     <div>
-      <ArticleMeta {...props.article} author={author} />
+      <ArticleMeta {...article} author={author} />
       <CommentsContainer slug={slug} />
     </div>
   );
 };
 
-const mapDispatchToProps = {
-  loadArticle,
-  loadComments
-};
+const mapDispatchToProps = dispatch => ({
+  loadArticle: slug => dispatch(loadArticle(slug)),
+  loadComments: slug => dispatch(loadComments(slug)),
+  onUnload: () => dispatch(unloadArticle())
+});
 
 const mapStateToProps = ({ entities }, ownProps) => {
   const slug = ownProps.match.params.slug;

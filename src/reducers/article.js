@@ -2,14 +2,11 @@ import {
   ARTICLE_SUCCESS,
   COMMENTS_SUCCESS,
   COMMENT_ADD_SUCCESS,
-  COMMENT_DELETE_SUCCESS
+  COMMENT_DELETE_SUCCESS,
+  ARTICLE_PAGE_UNLOAD
 } from "../constants/actionTypes";
 
-const defaultArticleState = {
-  article: "",
-  comments: []
-};
-const article = (state = defaultArticleState, action) => {
+const article = (state = {}, action) => {
   const { response } = action;
   switch (action.type) {
     case ARTICLE_SUCCESS: {
@@ -36,6 +33,9 @@ const article = (state = defaultArticleState, action) => {
         ...state,
         comments: state.comments.filter(comment => comment !== id)
       };
+    }
+    case ARTICLE_PAGE_UNLOAD: {
+      return {};
     }
     default:
       return state;

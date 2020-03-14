@@ -28,7 +28,7 @@ const Comment = props => {
             </p>
           </div>
         </div>
-        {username === currentUser.username ? (
+        {currentUser && username === currentUser.username ? (
           <div className="media-right">
             <button className="delete" onClick={handleDeleteComment}></button>
           </div>

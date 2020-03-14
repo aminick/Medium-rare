@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import Banner from "./Banner";
 import MainView from "./MainView";
-import { loadArticlesAll } from "../../actions";
+import { loadArticlesAll } from "../../actions/api";
 
 export class Home extends React.Component {
   componentDidMount() {

@@ -12,11 +12,12 @@ const ArticleMeta = props => {
             <h2 className="subtitle">{description}</h2>
             <AuthorMeta {...{ ...author, createdAt }} />
             <div className="tag-list">
-              {tagList.map(tag => (
-                <span className="tag is-light" key={tag}>
-                  {tag}
-                </span>
-              ))}
+              {tagList &&
+                tagList.map(tag => (
+                  <span className="tag is-light" key={tag}>
+                    {tag}
+                  </span>
+                ))}
             </div>
           </div>
         </div>
