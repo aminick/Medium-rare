@@ -2,6 +2,46 @@ import * as actionTypes from "../constants/actionTypes";
 import { CALL_API } from "../middleware/api";
 import Schemas from "../schemas";
 
+export const fetchGloablFeed = (offset = 0) => ({
+  feedType: "global",
+  offset: offset,
+  [CALL_API]: {
+    types: [
+      actionTypes.FEED_REQUEST,
+      actionTypes.FEED_SUCCESS,
+      actionTypes.FEED_FAILURE
+    ],
+    endpoint: `/articles?limit=10&offset=${offset}`,
+    schema: { articles: Schemas.ARTICLES_ARRAY }
+  }
+});
+
+export const loadGlobalFeed = (nextPage = false) => (dispatch, getState) => {
+  const { offset = 0 } = getState().pagination.feed["global"] || {};
+  if (offset > 0 && !nextPage) return null;
+  return dispatch(fetchGloablFeed(offset + (nextPage && 10)));
+};
+
+export const fetchPersonalFeed = (offset = 0) => ({
+  feedType: "personal",
+  offset: offset,
+  [CALL_API]: {
+    types: [
+      actionTypes.FEED_REQUEST,
+      actionTypes.FEED_SUCCESS,
+      actionTypes.FEED_FAILURE
+    ],
+    endpoint: `/articles/feed?limit=10&offset=${offset}`,
+    schema: { articles: Schemas.ARTICLES_ARRAY }
+  }
+});
+
+export const loadPersonalFeed = (nextPage = false) => (dispatch, getState) => {
+  const { offset = 0 } = getState().pagination.feed["personal"] || {};
+  if (offset > 0 && !nextPage) return null;
+  return dispatch(fetchPersonalFeed(offset + (nextPage && 10)));
+};
+
 export const fetchArticlesAll = () => ({
   [CALL_API]: {
     types: [
@@ -9,7 +49,7 @@ export const fetchArticlesAll = () => ({
       actionTypes.ARTICLES_SUCCESS,
       actionTypes.ARTICLES_FAILURE
     ],
-    endpoint: "/articles?limie=10",
+    endpoint: "/articles?limit=50",
     schema: { articles: Schemas.ARTICLES_ARRAY }
   }
 });

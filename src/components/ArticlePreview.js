@@ -1,5 +1,7 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { createSelector } from "reselect";
 
 const ArticlePreview = props => {
   const {
@@ -57,4 +59,23 @@ const ArticlePreview = props => {
   );
 };
 
-export default ArticlePreview;
+const getArticleMeta = (state, props) => {
+  return state.entities.articles[props.slug];
+};
+const getAuthorMeta = (state, props) =>
+  state.entities.users[getArticleMeta(state, props).author];
+
+const getArticle = createSelector(
+  [getArticleMeta, getAuthorMeta],
+  (article, author) => {
+    return { ...article, author: author };
+  }
+);
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    article: getArticle(state, ownProps)
+  };
+};
+
+export default connect(mapStateToProps)(ArticlePreview);

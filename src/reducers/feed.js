@@ -7,10 +7,12 @@
 const defaultFeedsState = {
   isFetching: false,
   articles: [],
-  error: null
+  error: null,
+  articlesCount: [],
+  nextPageUrl: ""
 };
 
-const feed = ({ types }) => {
+export const feed = ({ types }) => {
   if (!Array.isArray(types) || types.length !== 3) {
     throw new Error("Expect types to be an array of 3 elements");
   }
@@ -40,5 +42,3 @@ const feed = ({ types }) => {
     }
   };
 };
-
-export default feed;

@@ -4,15 +4,10 @@
  * The list component will manage its own isFetching from the props
  */
 
-import React, { useState } from "react";
-import Spinner from "./Spinner";
+import React from "react";
 
 const List = props => {
-  const { isFetching, items, renderItem } = props;
-
-  if (isFetching) {
-    return <Spinner />;
-  }
+  const { items, renderItem } = props;
 
   if (items.length === 0) {
     return <div className="article-preview">No articles are here...</div>;

@@ -1,41 +1,50 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import Banner from "./Banner";
-import MainView from "./MainView";
-import { loadArticlesAll } from "../../actions/api";
+import FeedContainer from "./FeedContainer";
+import { loadGlobalFeed, loadPersonalFeed } from "../../actions/api";
 
-export class Home extends React.Component {
-  componentDidMount() {
-    this.props.loadArticlesAll();
-  }
+export const Home = props => {
+  const { loadGlobalFeed, isAuthenticated, loadPersonalFeed } = props;
+  useEffect(() => {
+    isAuthenticated ? loadPersonalFeed() : loadGlobalFeed();
+  }, [loadGlobalFeed, loadPersonalFeed, isAuthenticated]);
 
-  render() {
-    return (
-      <div>
-        <Banner appName={this.props.appName}></Banner>
-        <section className="section">
-          <div className="container">
-            <div className="columns">
-              <MainView />
-              <div className="column">
-                <div className="">
-                  <p>Popular Tags</p>
-                </div>
-              </div>
+  const testLoadMore = () => {
+    loadGlobalFeed(true);
+  };
+
+  return (
+    <div>
+      <Banner appName={props.appName}></Banner>
+      <section className="section">
+        <div className="container">
+          <div className="columns">
+            <div className="column is-three-quarters">
+              <FeedContainer isAuthenticated={isAuthenticated} />
+              <button className="button is-primary" onClick={testLoadMore}>
+                Load More
+              </button>
+            </div>
+
+            <div className="column">
+              <p>Popular Tags</p>
             </div>
           </div>
-        </section>
-      </div>
-    );
-  }
-}
+        </div>
+      </section>
+    </div>
+  );
+};
 
-const mapStateToProps = ({ common }) => ({
-  appName: common.appName
+const mapStateToProps = ({ common, auth }) => ({
+  appName: common.appName,
+  isAuthenticated: auth.isAuthenticated
 });
 
-const mapDispatchToProps = dispatch => ({
-  loadArticlesAll: () => dispatch(loadArticlesAll())
-});
+const mapDispatchToProps = {
+  loadPersonalFeed,
+  loadGlobalFeed
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
