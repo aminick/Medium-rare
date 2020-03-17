@@ -8,18 +8,21 @@ import Error from "./components/Error";
 import Register from "./components/Register";
 import Settings from "./components/Settings";
 import Article from "./components/Article";
+import Profile from "./components/Profile";
+import Editor from "./components/Editor";
 import { getCurrentUser } from "./actions/auth";
 
 const PrivateRoute = ({ children, isAuthenticated, ...rest }) => {
   return (
     <Route {...rest}>
-      {true ? children : <Redirect to={{ pathname: "/login" }} />}
+      {isAuthenticated ? children : <Redirect to={{ pathname: "/login" }} />}
     </Route>
   );
 };
 
 export const App = props => {
   const { getCurrentUser } = props;
+  const { auth } = props;
 
   useEffect(() => {
     const token = window.localStorage.getItem("id_token");
@@ -39,12 +42,13 @@ export const App = props => {
         <Route path="/register">
           <Register />
         </Route>
+        <Route path="/@:username" component={Profile} />
         <Route path="/article/:slug" component={Article} />
-        <PrivateRoute
-          path="/settings"
-          isAuthenticated={props.auth.isAuthenticated}
-        >
+        <PrivateRoute path="/settings" isAuthenticated={auth.isAuthenticated}>
           <Settings />
+        </PrivateRoute>
+        <PrivateRoute path="/editor" isAuthenticated={true}>
+          <Editor />
         </PrivateRoute>
       </Switch>
       <Error />

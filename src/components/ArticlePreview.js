@@ -35,9 +35,12 @@ const ArticlePreview = props => {
                   alt={author.username}
                 />
               </figure>
-              <a href="/" className="is-size-6 has-text-black">
+              <Link
+                to={`@${author.username}`}
+                className="is-size-6 has-text-black"
+              >
                 {author.username}
-              </a>
+              </Link>
             </div>
             <div className="date">
               <span className="is-size-7">

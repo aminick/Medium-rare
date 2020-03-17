@@ -2,6 +2,91 @@ import * as actionTypes from "../constants/actionTypes";
 import { CALL_API } from "../middleware/api";
 import Schemas from "../schemas";
 
+export const createArticle = article => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.CREATE_ARTICLE_REQUEST,
+      actionTypes.CREATE_ARTICLE_SUCCESS,
+      actionTypes.CREATE_ARTICLE_FAILURE
+    ],
+    endpoint: `/articles`,
+    config: {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify(article)
+    },
+    schema: { article: Schemas.ARTICLE }
+  }
+});
+
+export const fetchFavoritedArticles = (username, offset) => ({
+  username,
+  offset,
+  [CALL_API]: {
+    types: [
+      actionTypes.FAVORITED_ARTICLES_REQUEST,
+      actionTypes.FAVORITED_ARTICLES_SUCCESS,
+      actionTypes.FAVORITED_ARTICLES_FAILURE
+    ],
+    endpoint: `/articles?favorited=${username}&limit=10&offset=${offset}`,
+    schema: { articles: Schemas.ARTICLES_ARRAY }
+  }
+});
+
+export const loadFavoritedArticles = (username, nextPage = false) => (
+  dispatch,
+  getState
+) => {
+  const { offset = 0 } = getState().pagination.favorited[username] || {};
+  const { slugs } = getState().pagination.favorited[username] || {};
+  if (slugs && !nextPage) return null;
+  return dispatch(fetchFavoritedArticles(username, offset + (nextPage && 10)));
+};
+
+export const fetchPublishedArticles = (username, offset) => ({
+  username,
+  offset,
+  [CALL_API]: {
+    types: [
+      actionTypes.PUBLISHED_ARTICLES_REQUEST,
+      actionTypes.PUBLISHED_ARTICLES_SUCCESS,
+      actionTypes.PUBLISHED_ARTICLES_FAILURE
+    ],
+    endpoint: `/articles?author=${username}&limit=10&offfset=${offset}`,
+    schema: { articles: Schemas.ARTICLES_ARRAY }
+  }
+});
+
+export const loadPublishedArticles = (username, nextPage = false) => (
+  dispatch,
+  getState
+) => {
+  const { offset = 0 } = getState().pagination.published[username] || {};
+  const { slugs } = getState().pagination.published[username] || {};
+  if (slugs && !nextPage) return null;
+  return dispatch(fetchPublishedArticles(username, offset + (nextPage && 10)));
+};
+
+export const fetchProfile = username => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.PROFILE_REQUEST,
+      actionTypes.PROFILE_SUCCESS,
+      actionTypes.PROFILE_FAILURE
+    ],
+    endpoint: `/profiles/${username}`,
+    schema: { profile: Schemas.USER }
+  }
+});
+
+export const loadProfile = username => (dispatch, getState) => {
+  const user = getState().entities.users[username];
+  if (user) return null;
+  return dispatch(fetchProfile(username));
+};
+
 export const fetchGloablFeed = (offset = 0) => ({
   feedType: "global",
   offset: offset,
@@ -18,7 +103,8 @@ export const fetchGloablFeed = (offset = 0) => ({
 
 export const loadGlobalFeed = (nextPage = false) => (dispatch, getState) => {
   const { offset = 0 } = getState().pagination.feed["global"] || {};
-  if (offset > 0 && !nextPage) return null;
+  const { slugs } = getState().pagination.feed["global"] || {};
+  if (slugs && !nextPage) return null;
   return dispatch(fetchGloablFeed(offset + (nextPage && 10)));
 };
 
@@ -38,7 +124,8 @@ export const fetchPersonalFeed = (offset = 0) => ({
 
 export const loadPersonalFeed = (nextPage = false) => (dispatch, getState) => {
   const { offset = 0 } = getState().pagination.feed["personal"] || {};
-  if (offset > 0 && !nextPage) return null;
+  const { slugs } = getState().pagination.feed["personal"] || {};
+  if (slugs && !nextPage) return null;
   return dispatch(fetchPersonalFeed(offset + (nextPage && 10)));
 };
 

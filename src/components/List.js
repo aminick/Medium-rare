@@ -9,8 +9,8 @@ import React from "react";
 const List = props => {
   const { items, renderItem } = props;
 
-  if (items.length === 0) {
-    return <div className="article-preview">No articles are here...</div>;
+  if (!items || items.length === 0) {
+    return <div>No articles are here...</div>;
   }
 
   return <div>{items.map(renderItem)}</div>;

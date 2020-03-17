@@ -11,7 +11,13 @@ import {
   ARTICLES_FAILURE,
   FEED_REQUEST,
   FEED_SUCCESS,
-  FEED_FAILURE
+  FEED_FAILURE,
+  PUBLISHED_ARTICLES_REQUEST,
+  PUBLISHED_ARTICLES_SUCCESS,
+  PUBLISHED_ARTICLES_FAILURE,
+  FAVORITED_ARTICLES_REQUEST,
+  FAVORITED_ARTICLES_SUCCESS,
+  FAVORITED_ARTICLES_FAILURE
 } from "../constants/actionTypes";
 
 const defaultEntityState = {
@@ -44,6 +50,22 @@ const pagination = combineReducers({
   feed: paginate({
     types: [FEED_REQUEST, FEED_SUCCESS, FEED_FAILURE],
     mapActionToKey: action => action.feedType
+  }),
+  published: paginate({
+    types: [
+      PUBLISHED_ARTICLES_REQUEST,
+      PUBLISHED_ARTICLES_SUCCESS,
+      PUBLISHED_ARTICLES_FAILURE
+    ],
+    mapActionToKey: action => action.username
+  }),
+  favorited: paginate({
+    types: [
+      FAVORITED_ARTICLES_REQUEST,
+      FAVORITED_ARTICLES_SUCCESS,
+      FAVORITED_ARTICLES_FAILURE
+    ],
+    mapActionToKey: action => action.username
   })
 });
 

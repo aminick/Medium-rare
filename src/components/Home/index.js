@@ -1,18 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import Banner from "./Banner";
 import FeedContainer from "./FeedContainer";
 import { loadGlobalFeed, loadPersonalFeed } from "../../actions/api";
 
 export const Home = props => {
-  const { loadGlobalFeed, isAuthenticated, loadPersonalFeed } = props;
-  useEffect(() => {
-    isAuthenticated ? loadPersonalFeed() : loadGlobalFeed();
-  }, [loadGlobalFeed, loadPersonalFeed, isAuthenticated]);
-
-  const testLoadMore = () => {
-    loadGlobalFeed(true);
-  };
+  const { isAuthenticated } = props;
 
   return (
     <div>
@@ -22,9 +15,6 @@ export const Home = props => {
           <div className="columns">
             <div className="column is-three-quarters">
               <FeedContainer isAuthenticated={isAuthenticated} />
-              <button className="button is-primary" onClick={testLoadMore}>
-                Load More
-              </button>
             </div>
 
             <div className="column">

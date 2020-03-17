@@ -11,7 +11,7 @@ const AuthorMeta = props => {
         </figure>
       </div>
       <div className="author-meta-container">
-        <Link to={`/user/${username}`} className="is-size-6 has-text-dark">
+        <Link to={`/@${username}`} className="is-size-6 has-text-dark">
           {username}
         </Link>
         <p className="is-size-7">{new Date(createdAt).toDateString()}</p>

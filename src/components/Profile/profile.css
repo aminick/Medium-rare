@@ -1,0 +1,13 @@
+.avatar {
+  display: inline-flex;
+}
+
+.container {
+  position: relative;
+}
+
+.follow-button {
+  position: absolute;
+  right: 10px;
+  bottom: 0px;
+}

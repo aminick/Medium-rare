@@ -1,20 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { loadGlobalFeed, loadPersonalFeed } from "../../actions/api";
 import Feed from "./Feed";
 
 export const FeedContainer = props => {
   const { loadGlobalFeed, loadPersonalFeed } = props;
-  const { articles, error, isAuthenticated } = props;
-  const [tab, setTab] = useState("personal");
+  const { error, isAuthenticated } = props;
+  const [tab, setTab] = useState(isAuthenticated ? "personal" : "global");
 
-  // useEffect(() => {
-  //   loadGlobalFeed();
-  // }, [loadGlobalFeed]);
-
-  const handleTabClick = tag => {
-    setTab(tag);
-    switch (tag) {
+  useEffect(() => {
+    switch (tab) {
       case "personal": {
         loadPersonalFeed();
         break;
@@ -23,8 +18,23 @@ export const FeedContainer = props => {
         loadGlobalFeed();
         break;
       }
-      default:
-        return;
+    }
+  }, [loadGlobalFeed, loadPersonalFeed, tab]);
+
+  const handleTabClick = tab => {
+    setTab(tab);
+  };
+
+  const handleLoadMore = () => {
+    switch (tab) {
+      case "personal": {
+        loadPersonalFeed(true);
+        break;
+      }
+      case "global": {
+        loadGlobalFeed(true);
+        break;
+      }
     }
   };
 
@@ -53,16 +63,9 @@ export const FeedContainer = props => {
           </p>
         </div>
       </nav>
-      <Feed tab={tab} />
+      <Feed tab={tab} handleLoadMore={handleLoadMore} />
     </>
   );
-};
-
-const mapStateToProps = state => {
-  const global = state.pagination.feed.global;
-  return {
-    articles: (global && global.slugs) || []
-  };
 };
 
 const mapDispatchToProps = {
@@ -70,4 +73,4 @@ const mapDispatchToProps = {
   loadPersonalFeed
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeedContainer);
+export default connect(null, mapDispatchToProps)(FeedContainer);
