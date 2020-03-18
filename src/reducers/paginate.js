@@ -31,10 +31,16 @@ const paginate = ({ types, mapActionToKey }) => {
         };
       }
       case successType: {
+        const articles = action.response.result.articles;
+        const slugs =
+          state.offset === action.offset
+            ? articles
+            : union(state.slugs, action.response.result.articles);
+
         return {
           ...state,
           isFetching: false,
-          slugs: union(state.slugs, action.response.result.articles),
+          slugs: slugs,
           offset: action.offset,
           articlesCount: action.response.result.articlesCount
         };

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { union } from "lodash";
 import { createArticle } from "../../actions/api";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { loadArticle, updateArticle } from "../../actions/api";
 
 const Editor = props => {
-  const { createArticle } = props;
+  const { createArticle, loadArticle, updateArticle } = props;
+  const { currentUser } = props;
 
   const [article, setArticle] = useState({
     title: "",
@@ -16,6 +18,25 @@ const Editor = props => {
 
   const [tag, setTag] = useState("");
   const history = useHistory();
+  const { slug } = useParams();
+
+  useEffect(() => {
+    if (slug)
+      loadArticle(slug).then(action => {
+        const { response } = action;
+        if (!response) {
+          history.replace({ pathname: "/" });
+        } else {
+          const slug = response.result.article;
+          const article = response.entities.articles[slug];
+          if (article.author != currentUser) {
+            history.replace({ pathname: "/" });
+          } else {
+            setArticle(article);
+          }
+        }
+      });
+  }, [loadArticle, setArticle, slug, currentUser]);
 
   const handleEditorChange = event => {
     setArticle({ ...article, [event.target.name]: event.target.value });
@@ -32,13 +53,23 @@ const Editor = props => {
   const handleSubmit = event => {
     event.preventDefault();
     const payload = { article };
-    createArticle(payload).then(action => {
-      if (action.response) {
-        history.replace({
-          pathname: `/article/${action.response.result.article}`
-        });
-      }
-    });
+    if (slug) {
+      updateArticle(slug, payload).then(action => {
+        if (action.response) {
+          history.replace({
+            pathname: `/article/${action.response.result.article}`
+          });
+        }
+      });
+    } else {
+      createArticle(payload).then(action => {
+        if (action.response) {
+          history.replace({
+            pathname: `/article/${action.response.result.article}`
+          });
+        }
+      });
+    }
   };
 
   const removeTag = tag => {
@@ -115,8 +146,17 @@ const Editor = props => {
   );
 };
 
-const mapDispatchToProps = {
-  createArticle
+const mapStateToProps = ({ auth }, ownProps) => {
+  const currentUser = auth.user;
+  return {
+    currentUser
+  };
 };
 
-export default connect(null, mapDispatchToProps)(Editor);
+const mapDispatchToProps = {
+  createArticle,
+  loadArticle,
+  updateArticle
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Editor);

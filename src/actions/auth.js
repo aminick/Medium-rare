@@ -36,6 +36,10 @@ export const loginUser = creds => dispatch => {
   return Auth.loginUser(creds).then(
     response => {
       localStorage.setItem("id_token", response.token);
+      localStorage.setItem(
+        "current_user",
+        JSON.stringify(response.entities.users[response.result])
+      );
       return Promise.resolve(dispatch(doLoginSuccess(response)));
     },
     error => {
@@ -48,6 +52,10 @@ export const getCurrentUser = token => dispatch => {
   dispatch(doLoginRequest());
   return Auth.getCurrentUser(token).then(
     response => {
+      localStorage.setItem(
+        "current_user",
+        JSON.stringify(response.entities.users[response.result])
+      );
       dispatch(doLoginSuccess(response));
     },
     error => {
@@ -75,6 +83,10 @@ export const registerUser = creds => dispatch => {
   return Auth.registerUser(creds).then(
     response => {
       localStorage.setItem("id_token", response.token);
+      localStorage.setItem(
+        "current_user",
+        JSON.stringify(response.entities.users[response.result])
+      );
       return Promise.resolve(dispatch(doRegisterSuccess(response)));
     },
     error => {
@@ -100,6 +112,7 @@ export const doLogoutUser = () => dispatch => {
   dispatch(doLogoutRequest());
   try {
     localStorage.removeItem("id_token");
+    localStorage.removeItem("current_user");
     dispatch(doLogoutSuccess());
   } catch (e) {
     dispatch(doLogoutFailure());

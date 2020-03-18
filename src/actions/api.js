@@ -2,6 +2,140 @@ import * as actionTypes from "../constants/actionTypes";
 import { CALL_API } from "../middleware/api";
 import Schemas from "../schemas";
 
+export const deleteArticle = slug => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.DELETE_ARTICLE_REQUEST,
+      actionTypes.DELETE_ARTICLE_SUCCESS,
+      actionTypes.DELETE_ARTICLE_FAILURE
+    ],
+    endpoint: `/articles/${slug}`,
+    config: {
+      method: "DELETE"
+    },
+    schema: {}
+  }
+});
+
+export const updateArticle = (slug, article) => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.UPDATE_ARTICLE_REQUEST,
+      actionTypes.UPDATE_ARTICLE_SUCCESS,
+      actionTypes.UPDATE_ARTICLE_FAILURE
+    ],
+    endpoint: `/articles/${slug}`,
+    config: {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify(article)
+    },
+    schema: { article: Schemas.ARTICLE }
+  }
+});
+
+export const fetchTaggedArticles = (tag, offset) => ({
+  tag,
+  offset,
+  [CALL_API]: {
+    types: [
+      actionTypes.TAGGED_ARTICLES_REQUEST,
+      actionTypes.TAGGED_ARTICLES_SUCCESS,
+      actionTypes.TAGGED_ARTICLES_FAILURE
+    ],
+    endpoint: `/articles?tag=${tag}&limit=10&offset=${offset}`,
+    schema: { articles: Schemas.ARTICLES_ARRAY }
+  }
+});
+
+export const loadTaggedArticles = (tag, nextPage = false) => (
+  dispatch,
+  getState
+) => {
+  const { offset = 0 } = getState().pagination.tagged[tag] || {};
+  const { slugs } = getState().pagination.tagged[tag] || {};
+  if (slugs && !nextPage) return null;
+  return dispatch(fetchTaggedArticles(tag, offset + (nextPage && 10)));
+};
+
+export const fetchTags = () => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.TAGS_REQUEST,
+      actionTypes.TAGS_SUCCESS,
+      actionTypes.TAGS_FAILURE
+    ],
+    endpoint: "/tags",
+    schema: {}
+  }
+});
+
+export const loadTags = () => (dispatch, getState) => {
+  return dispatch(fetchTags());
+};
+
+export const followUser = username => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.FOLLOW_REQUEST,
+      actionTypes.FOLLOW_SUCCESS,
+      actionTypes.FOLLOW_FAILURE
+    ],
+    endpoint: `/profiles/${username}/follow`,
+    config: {
+      method: "POST"
+    },
+    schema: { profile: Schemas.USER }
+  }
+});
+
+export const unfollowUser = username => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.UNFOLLOW_REQUEST,
+      actionTypes.UNFOLLOW_SUCCESS,
+      actionTypes.UNFOLLOW_FAILURE
+    ],
+    endpoint: `/profiles/${username}/follow`,
+    config: {
+      method: "DELETE"
+    },
+    schema: { profile: Schemas.USER }
+  }
+});
+
+export const favoriteArticle = slug => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.FAVORITE_REQUEST,
+      actionTypes.FAVORITE_SUCCESS,
+      actionTypes.FAVORITE_FAILURE
+    ],
+    endpoint: `/articles/${slug}/favorite`,
+    config: {
+      method: "POST"
+    },
+    schema: { article: Schemas.ARTICLE }
+  }
+});
+
+export const unfavoriteArticle = slug => ({
+  [CALL_API]: {
+    types: [
+      actionTypes.UNFAVORITE_REQUEST,
+      actionTypes.UNFAVORITE_SUCCESS,
+      actionTypes.UNFAVORITE_FAILURE
+    ],
+    endpoint: `/articles/${slug}/favorite`,
+    config: {
+      method: "DELETE"
+    },
+    schema: { article: Schemas.ARTICLE }
+  }
+});
+
 export const createArticle = article => ({
   [CALL_API]: {
     types: [
@@ -39,9 +173,7 @@ export const loadFavoritedArticles = (username, nextPage = false) => (
   dispatch,
   getState
 ) => {
-  const { offset = 0 } = getState().pagination.favorited[username] || {};
-  const { slugs } = getState().pagination.favorited[username] || {};
-  if (slugs && !nextPage) return null;
+  const offset = 0;
   return dispatch(fetchFavoritedArticles(username, offset + (nextPage && 10)));
 };
 
@@ -63,9 +195,7 @@ export const loadPublishedArticles = (username, nextPage = false) => (
   dispatch,
   getState
 ) => {
-  const { offset = 0 } = getState().pagination.published[username] || {};
-  const { slugs } = getState().pagination.published[username] || {};
-  if (slugs && !nextPage) return null;
+  const offset = 0;
   return dispatch(fetchPublishedArticles(username, offset + (nextPage && 10)));
 };
 
@@ -127,26 +257,6 @@ export const loadPersonalFeed = (nextPage = false) => (dispatch, getState) => {
   const { slugs } = getState().pagination.feed["personal"] || {};
   if (slugs && !nextPage) return null;
   return dispatch(fetchPersonalFeed(offset + (nextPage && 10)));
-};
-
-export const fetchArticlesAll = () => ({
-  [CALL_API]: {
-    types: [
-      actionTypes.ARTICLES_REQUEST,
-      actionTypes.ARTICLES_SUCCESS,
-      actionTypes.ARTICLES_FAILURE
-    ],
-    endpoint: "/articles?limit=50",
-    schema: { articles: Schemas.ARTICLES_ARRAY }
-  }
-});
-
-// TODO: Check for local cache
-// fetch or load from cache
-// this is a thunk in order to dispath and getState
-// getState = getStore
-export const loadArticlesAll = () => (dispatch, getState) => {
-  return dispatch(fetchArticlesAll());
 };
 
 const fetchUpdateSettings = settings => ({

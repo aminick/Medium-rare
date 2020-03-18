@@ -120,9 +120,13 @@ const Navbar = props => {
   );
 };
 
-const mapStateToProps = ({ auth }) => ({
-  user: auth.user
-});
+const mapStateToProps = ({ auth }) => {
+  const { username } =
+    JSON.parse(window.localStorage.getItem("current_user")) || {};
+  return {
+    user: auth.user || username
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   doLogoutUser: () => dispatch(doLogoutUser())

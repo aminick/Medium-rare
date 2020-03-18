@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { createSelector } from "reselect";
+import { favoriteArticle, unfavoriteArticle } from "../actions/api";
 
 const ArticlePreview = props => {
   const {
@@ -9,10 +10,17 @@ const ArticlePreview = props => {
     createdAt,
     title,
     favoritesCount,
+    favorited,
     description,
     tagList,
     slug
   } = props.article;
+
+  const { favoriteArticle, unfavoriteArticle } = props;
+
+  const handleFavorite = slug => {
+    favorited ? unfavoriteArticle(slug) : favoriteArticle(slug);
+  };
 
   return (
     <div className="card">
@@ -48,7 +56,14 @@ const ArticlePreview = props => {
               </span>
             </div>
           </div>
-          <span className="tag is-white tag-heart">❤️ {favoritesCount}</span>
+          <button
+            className={`button ${
+              favorited ? "is-danger" : "is-primary"
+            } is-light is-small favorite`}
+            onClick={() => handleFavorite(slug)}
+          >
+            ❤️ {favoritesCount}
+          </button>
           <div className="tag-list">
             {tagList.map(tag => (
               <span className="tag is-light" key={tag}>
@@ -81,4 +96,9 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticlePreview);
+const mapDispatchToProps = {
+  favoriteArticle,
+  unfavoriteArticle
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticlePreview);

@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { loadGlobalFeed, loadPersonalFeed } from "../../actions/api";
+import {
+  loadGlobalFeed,
+  loadPersonalFeed,
+  loadTaggedArticles
+} from "../../actions/api";
 import Feed from "./Feed";
 
 export const FeedContainer = props => {
-  const { loadGlobalFeed, loadPersonalFeed } = props;
+  const { loadGlobalFeed, loadPersonalFeed, loadTaggedArticles } = props;
   const { error, isAuthenticated } = props;
   const [tab, setTab] = useState(isAuthenticated ? "personal" : "global");
 
@@ -17,6 +21,9 @@ export const FeedContainer = props => {
       case "global": {
         loadGlobalFeed();
         break;
+      }
+      default: {
+        loadTaggedArticles(tab);
       }
     }
   }, [loadGlobalFeed, loadPersonalFeed, tab]);
@@ -35,42 +42,58 @@ export const FeedContainer = props => {
         loadGlobalFeed(true);
         break;
       }
+      default: {
+        loadTaggedArticles(tab, true);
+      }
     }
   };
 
   return (
     <>
-      <nav className="level border-bottom">
-        <div className="level-left">
-          {isAuthenticated && (
-            <div className="level-item">
-              <button
-                className="button is-white"
-                onClick={() => handleTabClick("personal")}
-              >
-                My Feed
-              </button>
-            </div>
-          )}
+      <div className="column is-three-quarters">
+        <nav className="level border-bottom">
+          <div className="level-left">
+            {isAuthenticated && (
+              <div className="level-item">
+                <button
+                  className={`button ${
+                    tab === "personal" ? "is-light" : "is-white"
+                  }`}
+                  onClick={() => handleTabClick("personal")}
+                >
+                  My Feed
+                </button>
+              </div>
+            )}
 
-          <p href="/" className="level-item">
-            <button
-              className="button is-white"
-              onClick={() => handleTabClick("global")}
-            >
-              Global Feed
-            </button>
-          </p>
-        </div>
-      </nav>
-      <Feed tab={tab} handleLoadMore={handleLoadMore} />
+            <p href="/" className="level-item">
+              <button
+                className={`button ${
+                  tab === "global" ? "is-light" : "is-white"
+                }`}
+                onClick={() => handleTabClick("global")}
+              >
+                Global Feed
+              </button>
+            </p>
+            {tab !== "personal" && tab !== "global" ? (
+              <button className="button is-light level-item ">#{tab}</button>
+            ) : null}
+          </div>
+        </nav>
+
+        <Feed tab={tab} handleLoadMore={handleLoadMore} />
+      </div>
+
+      <div className="column">{props.render(handleTabClick)}</div>
     </>
   );
 };
 
 const mapDispatchToProps = {
   loadGlobalFeed,
-  loadPersonalFeed
+  loadPersonalFeed,
+  loadTaggedArticles
 };
 
 export default connect(null, mapDispatchToProps)(FeedContainer);

@@ -11,6 +11,7 @@ import Article from "./components/Article";
 import Profile from "./components/Profile";
 import Editor from "./components/Editor";
 import { getCurrentUser } from "./actions/auth";
+import { APP_LOAD } from "./constants/actionTypes";
 
 const PrivateRoute = ({ children, isAuthenticated, ...rest }) => {
   return (
@@ -22,47 +23,59 @@ const PrivateRoute = ({ children, isAuthenticated, ...rest }) => {
 
 export const App = props => {
   const { getCurrentUser } = props;
-  const { auth } = props;
+  const { auth, common } = props;
 
   useEffect(() => {
     const token = window.localStorage.getItem("id_token");
-    if (token) getCurrentUser(token);
+    if (token) getCurrentUser(token).then(() => props.appLoad());
+    else props.appLoad();
   }, [getCurrentUser]);
 
   return (
     <div>
-      <Navbar appName={props.appName}></Navbar>
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Route path="/@:username" component={Profile} />
-        <Route path="/article/:slug" component={Article} />
-        <PrivateRoute path="/settings" isAuthenticated={auth.isAuthenticated}>
-          <Settings />
-        </PrivateRoute>
-        <PrivateRoute path="/editor" isAuthenticated={true}>
-          <Editor />
-        </PrivateRoute>
-      </Switch>
+      <Navbar appName={common.appName}></Navbar>
+      {common.appLoaded && (
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/@:username" component={Profile} />
+          <Route path="/article/:slug" component={Article} />
+          <PrivateRoute path="/settings" isAuthenticated={auth.isAuthenticated}>
+            <Settings />
+          </PrivateRoute>
+          <PrivateRoute
+            path="/editor/:slug"
+            component={Editor}
+            isAuthenticated={auth.isAuthenticated}
+          />
+          <PrivateRoute
+            path="/editor"
+            component={Editor}
+            isAuthenticated={auth.isAuthenticated}
+          />
+        </Switch>
+      )}
+
       <Error />
     </div>
   );
 };
 
 const mapStateToProps = ({ common, auth }) => ({
-  appName: common.appName,
-  auth: auth
+  common,
+  auth
 });
 
 const mapDispatchToProps = dispatch => ({
-  getCurrentUser: token => dispatch(getCurrentUser(token))
+  getCurrentUser: token => dispatch(getCurrentUser(token)),
+  appLoad: () => dispatch({ type: APP_LOAD })
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

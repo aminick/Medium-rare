@@ -1,3 +1,5 @@
+// DEPRECATED
+
 /**
  * This is a higer order reducer that creates reducers based on they given
  * action types and a "key" which it's going to update. This is used

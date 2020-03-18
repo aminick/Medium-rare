@@ -8,3 +8,9 @@
   display: inline-block;
   vertical-align: middle;
 }
+
+.actions-container {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}

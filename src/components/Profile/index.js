@@ -3,18 +3,22 @@ import { connect } from "react-redux";
 import { createSelector } from "reselect";
 import { loadProfile } from "../../actions/api";
 import { isEmpty } from "lodash";
+import { followUser, unfollowUser } from "../../actions/api";
 import "./profile.css";
-
 import ArticlesContainer from "./ArticlesContainer";
 
 const Profile = props => {
   const { user } = props;
-  const { loadProfile } = props;
+  const { loadProfile, followUser, unfollowUser } = props;
   const username = props.match.params.username;
 
   useEffect(() => {
     loadProfile(username);
   }, [username, loadProfile]);
+
+  const handleFollow = username => {
+    user.following ? unfollowUser(username) : followUser(username);
+  };
 
   if (isEmpty(user)) return <></>;
 
@@ -33,8 +37,12 @@ const Profile = props => {
                 }
               />
             </p>
-            <div className="button is-danger is-outlined follow-button">
-              Follow
+            <div
+              className={`button ${!user.following &&
+                "is-danger"} is-outlined follow-button`}
+              onClick={() => handleFollow(user.username)}
+            >
+              Follow{user.following && "ing"}
             </div>
           </div>
         </div>
@@ -59,7 +67,9 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = {
-  loadProfile
+  loadProfile,
+  followUser,
+  unfollowUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

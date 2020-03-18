@@ -12,6 +12,7 @@ export const ArticlesContainer = props => {
   const [tab, setTab] = useState("published");
 
   useEffect(() => {
+    console.log("effect running");
     switch (tab) {
       case "published": {
         loadPublishedArticles(username);

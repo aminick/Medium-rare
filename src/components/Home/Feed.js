@@ -38,17 +38,23 @@ const Feed = React.memo(props => {
 }, areEqual);
 
 const getTab = (_, props) => props.tab;
-const getFeed = (state, _) => state.pagination.feed;
-const getFeedByTab = createSelector([getTab, getFeed], (tab, feed) => {
-  switch (tab) {
-    case "personal": {
-      return feed.personal || undefined;
-    }
-    case "global": {
-      return feed.global || undefined;
+const getPagination = (state, _) => state.pagination;
+const getFeedByTab = createSelector(
+  [getTab, getPagination],
+  (tab, pagination) => {
+    switch (tab) {
+      case "personal": {
+        return pagination.feed.personal || undefined;
+      }
+      case "global": {
+        return pagination.feed.global || undefined;
+      }
+      default: {
+        return pagination.tagged[tab];
+      }
     }
   }
-});
+);
 
 const mapStateToProps = (state, ownProps) => ({
   feed: getFeedByTab(state, ownProps)

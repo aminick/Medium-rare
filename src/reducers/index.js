@@ -6,9 +6,6 @@ import auth from "./auth";
 import article from "./article";
 import paginate from "./paginate";
 import {
-  ARTICLES_REQUEST,
-  ARTICLES_SUCCESS,
-  ARTICLES_FAILURE,
   FEED_REQUEST,
   FEED_SUCCESS,
   FEED_FAILURE,
@@ -17,7 +14,10 @@ import {
   PUBLISHED_ARTICLES_FAILURE,
   FAVORITED_ARTICLES_REQUEST,
   FAVORITED_ARTICLES_SUCCESS,
-  FAVORITED_ARTICLES_FAILURE
+  FAVORITED_ARTICLES_FAILURE,
+  TAGGED_ARTICLES_REQUEST,
+  TAGGED_ARTICLES_SUCCESS,
+  TAGGED_ARTICLES_FAILURE
 } from "../constants/actionTypes";
 
 const defaultEntityState = {
@@ -31,14 +31,6 @@ const entitiesReducer = (state = defaultEntityState, action) => {
   }
   return state;
 };
-
-const globalFeed = FEED({
-  types: [ARTICLES_REQUEST, ARTICLES_SUCCESS, ARTICLES_FAILURE]
-});
-
-const feeds = combineReducers({
-  globalFeed
-});
 
 const errorMessageReducer = (state = null, action) => {
   const { error } = action;
@@ -66,13 +58,20 @@ const pagination = combineReducers({
       FAVORITED_ARTICLES_FAILURE
     ],
     mapActionToKey: action => action.username
+  }),
+  tagged: paginate({
+    types: [
+      TAGGED_ARTICLES_REQUEST,
+      TAGGED_ARTICLES_SUCCESS,
+      TAGGED_ARTICLES_FAILURE
+    ],
+    mapActionToKey: action => action.tag
   })
 });
 
 const rootReducer = combineReducers({
   common: commonReducer,
   entities: entitiesReducer,
-  feeds: feeds,
   auth: auth,
   errorMessage: errorMessageReducer,
   article: article,
@@ -80,57 +79,3 @@ const rootReducer = combineReducers({
 });
 
 export default rootReducer;
-
-// const pagination = {
-//   feed: {
-//     personal: {
-//       pageCount: 0
-//       isFetching: false,
-//       slugs: ["slug1", "slug2"],
-//       offset:
-//       articlesCount: 25
-//     },
-//     global: {
-//       pageCount: 0
-//       isFetching: false,
-//       slugs: ["slug1", "slug2"],
-//       nextPageUrl: "/xxxxx"
-//     }
-//   },
-//   published: {
-//     user1: {
-//       isFetching: false,
-//       slugs: ["slug1", "slug2"],
-//       nextPageUrl: "/xxxxx"
-//     },
-//     user2: {
-//       isFetching: false,
-//       slugs: ["slug1", "slug2"],
-//       nextPageUrl: "/xxxxx"
-//     }
-//   },
-//   favorited: {
-//     user1: {
-//       isFetching: false,
-//       slugs: ["slug1", "slug2"],
-//       nextPageUrl: "/xxxxx"
-//     },
-//     user2: {
-//       isFetching: false,
-//       slugs: ["slug1", "slug2"],
-//       nextPageUrl: "/xxxxx"
-//     }
-//   },
-//   tagged: {
-//     tag1: {
-//       isFetching: false,
-//       slugs: ["slug1", "slug2"],
-//       nextPageUrl: "/xxxxx"
-//     },
-//     tag2: {
-//       isFetching: false,
-//       slugs: ["slug1", "slug2"],
-//       nextPageUrl: "/xxxxx"
-//     }
-//   }
-// };

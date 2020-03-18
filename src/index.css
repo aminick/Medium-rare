@@ -20,9 +20,9 @@
   margin-right: 0.3rem;
 }
 
-.tag-heart {
-  position: absolute;
-  top: 3px;
+.favorite {
+  position: absolute !important;
+  top: 0px;
   right: 3px;
 }
 

@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import ArticleMeta from "./ArticleMeta";
 import CommentsContainer from "./CommentsContainer";
-import Error from "../Error";
-import { loadArticle, loadComments } from "../../actions/api";
+import { loadArticle, loadComments, deleteArticle } from "../../actions/api";
 import { unloadArticle } from "../../actions";
 
 const Article = props => {
   const { slug } = useParams();
-  const { article, author } = props;
-  const { loadArticle, loadComments, onUnload } = props;
+  const history = useHistory();
+  const location = useLocation();
+  const { article, author, isAuthor } = props;
+  const { loadArticle, loadComments, deleteArticle, onUnload } = props;
 
   useEffect(() => {
     loadArticle(slug);
@@ -20,9 +21,30 @@ const Article = props => {
     };
   }, [loadArticle, loadComments, onUnload, slug]);
 
+  const handleEditClick = () => {
+    history.push({ pathname: `/editor/${slug}` });
+  };
+
+  const handleDeleteClick = () => {
+    deleteArticle(slug).then(action => {
+      if (action.response) {
+        let { from } = location.state || {
+          from: { pathname: `/@${author.username}` }
+        };
+        history.replace(from);
+      }
+    });
+  };
+
   return (
     <div>
-      <ArticleMeta {...article} author={author} />
+      <ArticleMeta
+        {...article}
+        author={author}
+        isAuthor={isAuthor}
+        handleEditClick={handleEditClick}
+        handleDeleteClick={handleDeleteClick}
+      />
       <CommentsContainer slug={slug} />
     </div>
   );
@@ -30,17 +52,20 @@ const Article = props => {
 
 const mapDispatchToProps = dispatch => ({
   loadArticle: slug => dispatch(loadArticle(slug)),
+  deleteArticle: slug => dispatch(deleteArticle(slug)),
   loadComments: slug => dispatch(loadComments(slug)),
   onUnload: () => dispatch(unloadArticle())
 });
 
-const mapStateToProps = ({ entities }, ownProps) => {
+const mapStateToProps = ({ entities, auth }, ownProps) => {
   const slug = ownProps.match.params.slug;
   const article = entities.articles[slug] || {};
   const author = (article.author && entities.users[article.author]) || "";
+  const isAuthor = author.username === auth.user;
   return {
     article,
-    author
+    author,
+    isAuthor
   };
 };
 
