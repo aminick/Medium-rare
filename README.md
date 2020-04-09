@@ -8,4 +8,5 @@ It features:
 * React Hooks
 * React-Redux
 * React Router V4
-* Custom Middleware
+* Custom Middleware for API requests
+* Normalized data using normalizr
